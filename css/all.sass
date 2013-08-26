@@ -3,6 +3,10 @@ html, body
 body
 	margin: 0
 	padding: 0
+	font-family: arial
+a
+	text-decoration: none
+	color: black
 main
 	width: 480px
 	margin: 0 auto
@@ -13,22 +17,34 @@ main
 	::selection
 		color: inherit
 	.space
-		height: 20px
+		padding: 0 10px
+		margin: 10px 0
+		.add
+			visibility: hidden
 		&:hover
-			background: #EEE
+			background-color: #EEE
+			.add
+				visibility: visible
 	.block
 		background: white
 		border: grey
-		padding: 5px
 		position: relative
-		textarea
+		border: 1px solid black
+		margin: 0 10px
+		overflow: hidden
+		.text
+			padding: 5px
 			width: 100%
 			max-width: 100%
 			min-height: 100px
 			border: none
 			resize: none
+			&:focus
+				outline: none
+			&::selection
+				background-color: orange
 	.menu-bar
 		background: #DDD
 		padding: 2px
-		height: 15px
+		height: 30px
 	
