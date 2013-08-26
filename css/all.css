@@ -1,0 +1,36 @@
+html, body {
+  width: 100%; }
+
+body {
+  margin: 0;
+  padding: 0; }
+
+main {
+  width: 480px;
+  margin: 0 auto; }
+
+.editor {
+  border: 1px solid grey;
+  background: #cccccc;
+  position: relative; }
+  .editor ::selection {
+    color: inherit; }
+  .editor .space {
+    height: 20px; }
+    .editor .space:hover {
+      background: #eeeeee; }
+  .editor .block {
+    background: white;
+    border: grey;
+    padding: 5px;
+    position: relative; }
+    .editor .block textarea {
+      width: 100%;
+      max-width: 100%;
+      min-height: 100px;
+      border: none;
+      resize: none; }
+  .editor .menu-bar {
+    background: #dddddd;
+    padding: 2px;
+    height: 15px; }
