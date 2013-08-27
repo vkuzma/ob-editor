@@ -1,6 +1,6 @@
 var EditGuru = function(options) {
-	for(key in options) {
-		this[key] = options[key]
+	for(var key in options) {
+		this[key] = options[key];
 	}
 	this.$container = $(this.container);
 	this.$content = this.$container.find('#content');
@@ -16,6 +16,16 @@ EditGuru.prototype = {
 				if(event.target == event.currentTarget)
 					this.insert_block($(event.target));
 			}, this));
+			this.$container.on('paste', '.text', function(event) {
+				event.preventDefault();
+				console.log($(this).html());
+				var $this = $(this);
+				var old_text = $(this).html();
+				setTimeout(function() {
+					console.log($this.html());
+					$this.html(old_text);
+				},0);
+			});
 		}
 	},
 	insert_block: function(spacer) {
@@ -25,7 +35,7 @@ EditGuru.prototype = {
 		var match = false;
 		blocks.each($.proxy(function(index, value) {
 			if($(value).position().top > spacer.position().top) {
-				click_pos = index
+				click_pos = index;
 				$(value).before(new_block);
 				match = true;
 				return false;
@@ -37,6 +47,6 @@ EditGuru.prototype = {
 
 		new_block.animate({
 			opacity: 1
-		}, 500)
-	}	
-}
+		}, 500);
+	}
+};
