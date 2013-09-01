@@ -17,6 +17,13 @@ EditGuru.prototype = {
 				if(event.target == event.currentTarget)
 					this.insertBlock($(event.target));
 			}, this));
+			this.$content.on('keypress', '.text', function(event) {
+				// Enter
+				if(event.keyCode == 13) {
+					event.preventDefault();
+					console.log(window.getSelection());
+				}
+			});
 			this.$container.find('.bold').click(function(event) {
 				event.preventDefault();
 				alert("bold");

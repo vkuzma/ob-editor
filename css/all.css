@@ -16,7 +16,7 @@ main {
 
 .editor {
   border: 1px solid grey;
-  background: #cccccc;
+  background: #eeeeee;
   position: relative; }
   .editor ::selection {
     color: inherit; }
@@ -26,7 +26,7 @@ main {
     .editor .space .add {
       visibility: hidden; }
     .editor .space:hover {
-      background-color: #eeeeee; }
+      background-color: #fafafa; }
       .editor .space:hover .add {
         visibility: visible; }
   .editor .block {
@@ -62,7 +62,7 @@ main {
       .editor .menu-bar > a:first-child {
         margin-left: 0; }
       .editor .menu-bar > a:hover {
-        background: #eeeeee; }
+        background: #fafafa; }
       .editor .menu-bar > a.bold {
         font-weight: bold; }
       .editor .menu-bar > a.italic {
@@ -84,7 +84,7 @@ main {
     transition: 300ms bottom;
     position: absolute;
     width: 100%;
-    background: #cccccc; }
+    background: #eeeeee; }
     .code-preview .inner .content {
       background: white;
       margin: 15px;
@@ -95,4 +95,4 @@ main {
       padding: 10px;
       left: 40px;
       height: 20px;
-      background: #cccccc; }
+      background: #eeeeee; }
