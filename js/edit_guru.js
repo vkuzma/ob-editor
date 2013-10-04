@@ -33,18 +33,18 @@ EditGuru.prototype = {
 					
 					// $(this).html([$(this).html().slice(0, selObj.extentOffset), $(this).html().slice(selObj.extentOffset)].join('<br>'));
 					var node = this;
-		   			var range = window.getSelection().getRangeAt(0);
+					// var range = window.getSelection().getRangeAt(0);
 
-		   			var treeWalker = document.createTreeWalker(
-					        node,
-					        NodeFilter.SHOW_ELEMENT,
-					        null,
-					        false
-					    );
-					    var charCount = 0;
-					    while (treeWalker.nextNode()) {
-					        //console.log(treeWalker.currentNode);
-					    }
+					// var treeWalker = document.createTreeWalker(
+					// 		node,
+					// 		NodeFilter.SHOW_ELEMENT,
+					// 		null,
+					// 		false
+					// 	);
+					// 	var charCount = 0;
+					// 	while (treeWalker.nextNode()) {
+					// 		//console.log(treeWalker.currentNode);
+					// 	}
 				}
 			});
 			this.$container.find('.bold').click(function(event) {
@@ -135,7 +135,7 @@ var CodePreview = function($elem) {
 	this.$open = this.$cpreview.find('.open');
 
 	this.init();
-}
+};
 CodePreview.prototype = {
 	init: function() {
 		this.$open.click($.proxy(function(event) {
@@ -162,7 +162,7 @@ CodePreview.prototype = {
 			this.$cpreview.css('bottom', 0);
 		}
 	}
-}
+};
 
 var SelectMan = function(selObj) {
 	this.selObj = selObj;
@@ -170,26 +170,98 @@ var SelectMan = function(selObj) {
 
 SelectMan.prototype = {
 	splitSelectedTextNode: function() {
-		console.log(this.getAnchorNodeIndex());
-		console.log(this.getFocusNodeIndex());
-		// if(selObj.type == 'Range') {
-		// 	select from right to left
-		// 	if(selObj.extentOffset > selObj.baseOffset) {
-		// 		var n1 = selObj.focusNode.splitText(selObj.extentOffset);
-		// 		var n2 = selObj.focusNode.splitText(selObj.baseOffset);
-		// 		var n0 = selObj.focusNode.splitText(0);
-		// 	}
-		// 	// select from left to right
-		// 	else {
-		// 		var n1 = selObj.focusNode.splitText(selObj.baseOffset);
-		// 		var n2 = selObj.focusNode.splitText(selObj.extentOffset);
-		// 		var n0 = selObj.focusNode.splitText(0);
-		// 	}
-		// 	$(n2).css('font-weight', 'bold');
-		// 	var newElement = $('<span style="color: grey;">');
-		// 	newElement.append(n2);
-		// 	$(selObj.focusNode.parentElement).html(n0).append(newElement).append(n1);
-		// }
+
+		// anchor and focus node is the same
+		if(this.selObj.anchorNode == this.selObj.focusNode) {
+			var currentNode = this.selObj.anchorNode;
+			this.replaceSelectedNode(currentNode, this.selObj.anchorOffset, this.selObj.focusOffset,
+				function(node) {
+					return '<span style="color: red;">' + node.data + '</span>';
+				});
+
+		}
+		//if(selObj.type == 'Range') {
+		//	select from right to left
+		//	if(selObj.extentOffset > selObj.baseOffset) {
+		//		var n1 = selObj.focusNode.splitText(selObj.extentOffset);
+		//		var n2 = selObj.focusNode.splitText(selObj.baseOffset);
+		//		var n0 = selObj.focusNode.splitText(0);
+		//	}
+		//	// select from left to right
+		//	else {
+		//		var n1 = selObj.focusNode.splitText(selObj.baseOffset);
+		//		var n2 = selObj.focusNode.splitText(selObj.extentOffset);
+		//		var n0 = selObj.focusNode.splitText(0);
+		//	}
+		//	$(n2).css('font-weight', 'bold');
+		//	var newElement = $('<span style="color: grey;">');
+		//	newElement.append(n2);
+		//	$(selObj.focusNode.parentElement).html(n0).append(newElement).append(n1);
+		//}
+	},
+	replaceSelectedNode: function(node, anchorOffset, focusOffset, fn) {
+		var right_node,
+			selected_node,
+			left_node;
+
+		var parent_node = $(node.parentNode);
+
+		// select from left to right
+		if(focusOffset > anchorOffset) {
+			right_node = node.splitText(focusOffset);
+			selected_node = right_node.previousSibling.splitText(anchorOffset);
+			left_node = node;
+		}
+		// select from right to left
+		else {
+			right_node = node.splitText(anchorOffset);
+			selected_node = right_node.previousSibling.splitText(focusOffset);
+			left_node = node;
+		}
+
+		var silblings = this.getAllPreviousSibling(left_node).reverse();
+		silblings.push(left_node);
+		parent_node.html(this.concatSilblings(silblings));
+		parent_node.append(fn(selected_node));
+		silblings = [];
+		silblings.push(right_node);
+		silblings = silblings.concat(this.getAllNextSibling(right_node));
+
+		// new_element
+
+		parent_node.append(this.concatSilblings(silblings));
+
+		// this.selObj.collapse(parent_node, 1);
+		// this.setCaret(left_node, 1, parent_node);
+
+		console.log([left_node, selected_node, right_node]);
+
+		return [left_node, selected_node, right_node];
+	},
+	concatSilblings: function(silblings) {
+		var value = '';
+		for(var key in silblings) {
+			value += silblings[key].data;
+		}
+		return value;
+	},
+	getAllPreviousSibling: function(node) {
+		var previousSiblings = [];
+		var current_node = node;
+		while(current_node.previousSibling) {
+			current_node = current_node.previousSibling;
+			previousSiblings.push(current_node);
+		}
+		return previousSiblings;
+	},
+	getAllNextSibling: function(node) {
+		var nextSiblings = [];
+		var current_node = node;
+		while(current_node.nextSibling) {
+			current_node = current_node.nextSibling;
+			nextSiblings.push(current_node);
+		}
+		return nextSiblings;
 	},
 	getAnchorNodeIndex: function() {
 		return this.getNodeIndex('anchorNode');
@@ -208,5 +280,13 @@ SelectMan.prototype = {
 		}
 		return -1;
 	},
-}
-	
+	// not working
+	setCaret: function(node, index, parent_node) {
+		// var range = document.createRange();
+		// range.setStart(node, index);
+		// range.collapse(true);
+		// this.selObj.removeAllRanges();
+		// this.selObj.addRange(range);
+		// parent_node.focus();
+	}
+};
